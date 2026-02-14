@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Component Library — Salesforce Aura & ComfyUI Workflows</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg-primary: #0C0E12;
+            --bg-secondary: #12151B;
+            --bg-card: #181C24;
+            --bg-card-hover: #1E2330;
+            --border: #2A2F3C;
+            --border-hover: #3D4456;
+            --text-primary: #E8E6E3;
+            --text-secondary: #8B8D94;
+            --text-muted: #5C5E66;
+            --accent-tribal: #C4875B;
+            --accent-tribal-dim: rgba(196, 135, 91, 0.12);
+            --accent-casino: #6B8ABA;
+            --accent-casino-dim: rgba(107, 138, 186, 0.12);
+            --accent-general: #7BA688;
+            --accent-general-dim: rgba(123, 166, 136, 0.12);
+            --accent-comfyui: #B07CC6;
+            --accent-comfyui-dim: rgba(176, 124, 198, 0.12);
+            --accent-apex: #C9A84C;
+            --accent-apex-dim: rgba(201, 168, 76, 0.12);
+            --radius: 10px;
+            --radius-lg: 16px;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ── NOISE OVERLAY ── */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ── HERO ── */
+        .hero {
+            position: relative;
+            padding: 6rem 2rem 4rem;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -40%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(196, 135, 91, 0.06) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--accent-tribal);
+            background: var(--accent-tribal-dim);
+            border: 1px solid rgba(196, 135, 91, 0.2);
+            padding: 0.4rem 1rem;
+            border-radius: 100px;
+            margin-bottom: 2rem;
+            position: relative;
+            z-index: 1;
+            animation: fadeDown 0.6s ease-out;
+        }
+
+        .hero-label::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent-tribal);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            line-height: 1.1;
+            position: relative;
+            z-index: 1;
+            animation: fadeDown 0.6s ease-out 0.1s both;
+        }
+
+        .hero h1 span {
+            background: linear-gradient(135deg, var(--accent-tribal) 0%, #E8C4A0 50%, var(--accent-casino) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-sub {
+            font-size: 1.15rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 1.5rem auto 0;
+            font-weight: 300;
+            position: relative;
+            z-index: 1;
+            animation: fadeDown 0.6s ease-out 0.2s both;
+        }
+
+        .hero-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2.5rem;
+            position: relative;
+            z-index: 1;
+            animation: fadeDown 0.6s ease-out 0.3s both;
+            flex-wrap: wrap;
+        }
+
+        .hero-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.7rem 1.4rem;
+            border-radius: 100px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.25s ease;
+        }
+
+        .hero-link--primary {
+            background: var(--accent-tribal);
+            color: #0C0E12;
+        }
+        .hero-link--primary:hover {
+            background: #D49A6E;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(196, 135, 91, 0.25);
+        }
+
+        .hero-link--secondary {
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+        .hero-link--secondary:hover {
+            border-color: var(--border-hover);
+            background: var(--bg-card-hover);
+            transform: translateY(-2px);
+        }
+
+        .hero-link svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* ── STATS BAR ── */
+        .stats-bar {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+            animation: fadeDown 0.6s ease-out 0.4s both;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-top: 0.25rem;
+        }
+
+        /* ── DIVIDER ── */
+        .divider {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border), transparent);
+        }
+
+        /* ── FILTER NAV ── */
+        .filter-nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(12, 14, 18, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+        }
+
+        .filter-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            gap: 0.5rem;
+            overflow-x: auto;
+            scrollbar-width: none;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .filter-inner::-webkit-scrollbar { display: none; }
+
+        .filter-btn {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            letter-spacing: 0.05em;
+            padding: 0.45rem 1rem;
+            border-radius: 100px;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .filter-btn:hover {
+            border-color: var(--border-hover);
+            color: var(--text-primary);
+        }
+
+        .filter-btn.active {
+            background: var(--text-primary);
+            color: var(--bg-primary);
+            border-color: var(--text-primary);
+        }
+
+        /* ── SECTION ── */
+        .section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem 2rem;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .section-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .section-icon--tribal { background: var(--accent-tribal-dim); border: 1px solid rgba(196, 135, 91, 0.2); }
+        .section-icon--casino { background: var(--accent-casino-dim); border: 1px solid rgba(107, 138, 186, 0.2); }
+        .section-icon--general { background: var(--accent-general-dim); border: 1px solid rgba(123, 166, 136, 0.2); }
+        .section-icon--comfyui { background: var(--accent-comfyui-dim); border: 1px solid rgba(176, 124, 198, 0.2); }
+        .section-icon--apex { background: var(--accent-apex-dim); border: 1px solid rgba(201, 168, 76, 0.2); }
+
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .section-count {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 0.2rem 0.6rem;
+            border-radius: 100px;
+            margin-left: 0.5rem;
+        }
+
+        /* ── CARD GRID ── */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 1rem;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            cursor: default;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: var(--border-hover);
+            background: var(--bg-card-hover);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .card:hover::before { opacity: 1; }
+
+        .card--tribal::before { background: linear-gradient(90deg, var(--accent-tribal), transparent); }
+        .card--casino::before { background: linear-gradient(90deg, var(--accent-casino), transparent); }
+        .card--general::before { background: linear-gradient(90deg, var(--accent-general), transparent); }
+        .card--comfyui::before { background: linear-gradient(90deg, var(--accent-comfyui), transparent); }
+        .card--apex::before { background: linear-gradient(90deg, var(--accent-apex), transparent); }
+
+        .card-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+        }
+
+        .card-name {
+            font-size: 1.05rem;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            line-height: 1.3;
+        }
+
+        .card-badges {
+            display: flex;
+            gap: 0.35rem;
+            flex-shrink: 0;
+            margin-left: 0.75rem;
+        }
+
+        .badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.6rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            letter-spacing: 0.03em;
+            white-space: nowrap;
+        }
+
+        .badge--apex { background: rgba(201, 168, 76, 0.15); color: #C9A84C; }
+        .badge--no-apex { background: rgba(92, 94, 102, 0.15); color: #5C5E66; }
+        .badge--obj { background: rgba(107, 138, 186, 0.15); color: #6B8ABA; }
+        .badge--flow { background: rgba(123, 166, 136, 0.15); color: #7BA688; }
+
+        .card-desc {
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            line-height: 1.55;
+            margin-bottom: 1rem;
+        }
+
+        .card-meta {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .card-tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 0.2rem 0.55rem;
+            border-radius: 4px;
+        }
+
+        /* ── FOOTER ── */
+        .footer {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        .footer a {
+            color: var(--accent-tribal);
+            text-decoration: none;
+        }
+
+        /* ── ANIMATIONS ── */
+        @keyframes fadeDown {
+            from { opacity: 0; transform: translateY(-16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            animation: fadeUp 0.5s ease-out both;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card:nth-child(1) { animation-delay: 0.05s; }
+        .card:nth-child(2) { animation-delay: 0.1s; }
+        .card:nth-child(3) { animation-delay: 0.15s; }
+        .card:nth-child(4) { animation-delay: 0.2s; }
+        .card:nth-child(5) { animation-delay: 0.25s; }
+        .card:nth-child(6) { animation-delay: 0.3s; }
+        .card:nth-child(7) { animation-delay: 0.35s; }
+        .card:nth-child(8) { animation-delay: 0.4s; }
+        .card:nth-child(9) { animation-delay: 0.45s; }
+        .card:nth-child(10) { animation-delay: 0.5s; }
+
+        /* ── HIDDEN UTILITY ── */
+        .hidden { display: none !important; }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 768px) {
+            .hero { padding: 4rem 1.5rem 3rem; }
+            .stats-bar { gap: 1.5rem; }
+            .section { padding: 3rem 1.5rem 1.5rem; }
+            .card-grid { grid-template-columns: 1fr; }
+            .filter-inner { justify-content: flex-start; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ═══════ HERO ═══════ -->
+    <header class="hero">
+        <div class="hero-label"><span></span> Open Source Component Library</div>
+        <h1>Salesforce &amp; AI<br><span>Component Catalog</span></h1>
+        <p class="hero-sub">Production-ready Aura components for Experience Cloud portals and ComfyUI workflows for generative AI — built for tribal communities, hospitality, and beyond.</p>
+        <div class="hero-links">
+            <a href="https://github.com/YOUR_USERNAME/salesforce-aura-components" target="_blank" class="hero-link hero-link--primary">
+                <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+                Salesforce Components
+            </a>
+            <a href="https://github.com/YOUR_USERNAME/comfyui-workflows" target="_blank" class="hero-link hero-link--secondary">
+                <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+                ComfyUI Workflows
+            </a>
+        </div>
+        <div class="stats-bar">
+            <div class="stat">
+                <div class="stat-value">21</div>
+                <div class="stat-label">Aura Components</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">4</div>
+                <div class="stat-label">AI Workflows</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">15+</div>
+                <div class="stat-label">Custom Objects</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">95%+</div>
+                <div class="stat-label">Test Coverage</div>
+            </div>
+        </div>
+    </header>
+
+    <div class="divider"></div>
+
+    <!-- ═══════ FILTER NAV ═══════ -->
+    <nav class="filter-nav">
+        <div class="filter-inner">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="tribal">Tribal / Citizen</button>
+            <button class="filter-btn" data-filter="casino">Hospitality / Casino</button>
+            <button class="filter-btn" data-filter="general">General / Reusable</button>
+            <button class="filter-btn" data-filter="apex">Apex Utilities</button>
+            <button class="filter-btn" data-filter="comfyui">ComfyUI Workflows</button>
+        </div>
+    </nav>
+
+    <!-- ═══════ TRIBAL / CITIZEN PORTAL ═══════ -->
+    <section class="section" data-category="tribal">
+        <div class="section-header">
+            <div class="section-icon section-icon--tribal">🏛️</div>
+            <h2 class="section-title">Tribal / Citizen Portal</h2>
+            <span class="section-count">10</span>
+        </div>
+        <div class="card-grid">
+
+            <div class="card card--tribal">
+                <div class="card-top">
+                    <div class="card-name">Tribal Profile</div>
+                    <div class="card-badges"><span class="badge badge--apex">APEX</span></div>
+                </div>
+                <div class="card-desc">Displays tribal member profile by looking up their Contact record via the User's Tribal_ID__c. Blue gradient card with white text.</div>
+                <div class="card-meta">
+                    <span class="card-tag">Contact</span>
+                    <span class="card-tag">User Lookup</span>
+                    <span class="card-tag">Experience Cloud</span>
+                </div>
+            </div>
+
+            <div class="card card--tribal">
+                <div class="card-top">
+                    <div class="card-name">Tribal Enrollment Questionnaire</div>
+                    <div class="card-badges"><span class="badge badge--apex">APEX</span></div>
+                </div>
+                <div class="card-desc">Multi-page enrollment wizard with 4 sections, progress indicator, and progressive save across Account and Contact objects.</div>
+                <div class="card-meta">
+                    <span class="card-tag">Account</span>
+                    <span class="card-tag">Contact</span>
+                    <span class="card-tag">Multi-Step Wizard</span>
+                </div>
+            </div>
+
+            <div class="card card--tribal">
+                <div class="card-top">
+                    <div class="card-name">Tribal Events</div>
+                    <div class="card-badges"><span class="badge badge--apex">APEX</span><span class="badge badge--obj">CUSTOM OBJ</span></div>
+                </div>
+                <div class="card-desc">Event listing with type filtering, hover descriptions, pagination (3 per page), and color-coded badges. Earth-tone styling.</div>
+                <div class="card-meta">
+                    <span class="card-tag">Tribal_Event__c</span>
+                    <span class="card-tag">Filtering</span>
+                    <span class="card-tag">Pagination</span>
+                </div>
+            </div>
+
+            <div class="card card--tribal">
+                <div class="card-top">
+                    <div class="card-name">Tribal News</div>
+                    <div class="card-badges"><span class="badge badge--apex">APEX</span><span class="badge badge--obj">CUSTOM OBJ</span></div>
+                </div>
+                <div class="card-desc">Published news articles with category and audience filtering. Hover shows summary teaser; click opens full article body in a modal.</div>
+                <div class="card-meta">
+                    <span class="card-tag">Tribal_News__c</span>
+                    <span class="card-tag">Rich Text</span>
+                    <span class="card-tag">Multi-Select Filter</span>
+                </div>
+            </div>
+
+            <div class="card card--tribal">
+                <div class="card-top">
+                    <div class="card-name">Community Services</div>
+                    <div class="card-badges"><span class="badge badge--apex">APEX</span><span class="badge badge--obj">CUSTOM OBJ</span></div>
+                </div>
+                <div class="card-desc">Master-detail layout (30/70 split) showing available services. Left panel lists names; right panel shows full details with Apply/Inquire button.</div>
+                <div class="card-meta">
+                    <span class="card-tag">Community_Service__c</span>
+                    <span class="card-tag">Master-Detail</span>
+                </div>
+            </div>
+
+            <div class="card card--tribal">
+                <div class="card-top">
+                    <div class="card-name">Recommended Services</div>
+                    <div class="card-badges"><span class="badge badge--apex">APEX</span></div>
+                </div>
+                <div class="card-desc">Displays personalized recommended community services for the logged-in citizen based on their Contact profile.</div>
+                <div class="card-meta">
+                    <span class="card-tag">Contact</span>
+                    <span class="card-tag">Personalized</span>
+                </div>
+            </div>
+
+            <div class="card card--tribal">
+                <div class="card-top">
+                    <div class="card-name">Citizen Case Submission</div>
+                    <div class="card-badges"><span class="badge badge--apex">APEX</span></div>
+                </div>
+                <div class="card-desc">Minimal-footprint case submission form. Email, Subject, Description fields with auto-set Status (New) and Origin (Web).</div>
+                <div class="card-meta">
+                    <span class="card-tag">Case (Standard)</span>
+                    <span class="card-tag">Compact Form</span>
+                </div>
+            </div>
+
+            <div class="card card--tribal">
+                <div class="card-top">
+                    <div class="card-name">Family Tree</div>
+                    <div class="card-badges"><span class="badge badge--apex">APEX</span></div>
+                </div>
+                <div class="card-desc">Visual family hierarchy from Head of Household. Recursive tree with expand/collapse, connector lines, and click-to-navigate.</div>
+                <div class="card-meta">
+                    <span class="card-tag">Contact</span>
+                    <span class="card-tag">Recursive Component</span>
+                    <span class="card-tag">Visual Tree</span>
+                </div>
+            </div>
+
+            <div class="card card--tribal">
+                <div class="card-top">
+                    <div class="card-name">Signature Capture</div>
+                    <div class="card-badges"><span class="badge badge--apex">APEX</span><span class="badge badge--obj">CUSTOM OBJ</span></div>
+                </div>
+                <div class="card-desc">Typed signature with live cursive Canvas preview (Dancing Script font). Stores metadata + PNG image as Salesforce File with IP audit trail.</div>
+                <div class="card-meta">
+                    <span class="card-tag">Signature_Capture__c</span>
+                    <span class="card-tag">HTML5 Canvas</span>
+                    <span class="card-tag">ContentVersion</span>
+                </div>
+            </div>
+
+            <div class="card card--tribal">
+                <div class="card-top">
+                    <div class="card-name">Citizen Scheduler</div>
+                    <div class="card-badges"><span class="badge badge--apex">APEX</span><span class="badge badge--obj">CUSTOM OBJ</span></div>
+                </div>
+                <div class="card-desc">Two-component system: 4-step appointment booking wizard for citizens + weekly calendar view for staff with color-coded meeting types.</div>
+                <div class="card-meta">
+                    <span class="card-tag">CIT_Appointment__c</span>
+                    <span class="card-tag">CIT_Resource__c</span>
+                    <span class="card-tag">Wizard + Calendar</span>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ═══════ HOSPITALITY / CASINO ═══════ -->
+    <section class="section" data-category="casino">
+        <div class="section-header">
+            <div class="section-icon section-icon--casino">🎰</div>
+            <h2 class="section-title">Hospitality / Casino</h2>
+            <span class="section-count">3</span>
+        </div>
+        <div class="card-grid">
+
+            <div class="card card--casino">
+                <div class="card-top">
+                    <div class="card-name">Guest Service Request</div>
+                    <div class="card-badges"><span class="badge badge--apex">APEX</span><span class="badge badge--obj">CUSTOM OBJ</span></div>
+                </div>
+                <div class="card-desc">Department-based service request form with dependent sub-category picklists (Valet, Front Desk, Maintenance, Housekeeping). Confirmation with tracking ID.</div>
+                <div class="card-meta">
+                    <span class="card-tag">Guest_Service_Request__c</span>
+                    <span class="card-tag">Dependent Picklists</span>
+                </div>
+            </div>
+
+            <div class="card card--casino">
+                <div class="card-top">
+                    <div class="card-name">Loyalty Card</div>
+                    <div class="card-badges"><span class="badge badge--no-apex">CLIENT-SIDE</span></div>
+                </div>
+                <div class="card-desc">Visual loyalty card display with 5 tier designs — Bronze, Silver, Gold, Platinum, and Diamond. Dynamic styling based on loyalty level input.</div>
+                <div class="card-meta">
+                    <span class="card-tag">No Custom Objects</span>
+                    <span class="card-tag">CSS Gradients</span>
+                    <span class="card-tag">5 Tiers</span>
+                </div>
+            </div>
+
+            <div class="card card--casino">
+                <div class="card-top">
+                    <div class="card-name">Weekly Events</div>
+                    <div class="card-badges"><span class="badge badge--apex">APEX</span><span class="badge badge--obj">CUSTOM OBJ</span></div>
+                </div>
+                <div class="card-desc">Day-of-week event display for hotel, casino, spa, and golf venues. Arrow navigation between days, location filtering, hover descriptions.</div>
+                <div class="card-meta">
+                    <span class="card-tag">Weekly_Event__c</span>
+                    <span class="card-tag">Day Navigation</span>
+                    <span class="card-tag">Location Filter</span>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ═══════ GENERAL / REUSABLE ═══════ -->
+    <section class="section" data-category="general">
+        <div class="section-header">
+            <div class="section-icon section-icon--general">🔧</div>
+            <h2 class="section-title">General / Reusable</h2>
+            <span class="section-count">7</span>
+        </div>
+        <div class="card-grid">
+
+            <div class="card card--general">
+                <div class="card-top">
+                    <div class="card-name">Hello World</div>
+                    <div class="card-badges"><span class="badge badge--no-apex">CLIENT-SIDE</span></div>
+                </div>
+                <div class="card-desc">Starter Aura component with configurable text input. Great for learning Aura basics or as a component template.</div>
+                <div class="card-meta">
+                    <span class="card-tag">Starter Template</span>
+                    <span class="card-tag">App Builder Config</span>
+                </div>
+            </div>
+
+            <div class="card card--general">
+                <div class="card-top">
+                    <div class="card-name">PDF Viewer</div>
+                    <div class="card-badges"><span class="badge badge--apex">APEX</span></div>
+                </div>
+                <div class="card-desc">PDF.js-powered viewer that auto-discovers PDF files attached to any record. File list with selection and iframe rendering.</div>
+                <div class="card-meta">
+                    <span class="card-tag">ContentDocumentLink</span>
+                    <span class="card-tag">PDF.js</span>
+                    <span class="card-tag">Any Object</span>
+                </div>
+            </div>
+
+            <div class="card card--general">
+                <div class="card-top">
+                    <div class="card-name">Museum Carousel</div>
+                    <div class="card-badges"><span class="badge badge--apex">APEX</span><span class="badge badge--obj">CUSTOM OBJ</span></div>
+                </div>
+                <div class="card-desc">Auto-rotating 3-image carousel for museum artifacts. Rotates every 10 seconds, sourcing images from newest ContentVersion per record.</div>
+                <div class="card-meta">
+                    <span class="card-tag">Museum_Artifact__c</span>
+                    <span class="card-tag">Auto-Rotate</span>
+                    <span class="card-tag">Salesforce Files</span>
+                </div>
+            </div>
+
+            <div class="card card--general">
+                <div class="card-top">
+                    <div class="card-name">Carousel</div>
+                    <div class="card-badges"><span class="badge badge--apex">APEX</span><span class="badge badge--obj">CUSTOM OBJ</span></div>
+                </div>
+                <div class="card-desc">Configurable image carousel with sort order, active filtering, hover descriptions, and click-through destination URLs with target behavior.</div>
+                <div class="card-meta">
+                    <span class="card-tag">Carousel_Slide__c</span>
+                    <span class="card-tag">Sort Order</span>
+                    <span class="card-tag">Accessibility</span>
+                </div>
+            </div>
+
+            <div class="card card--general">
+                <div class="card-top">
+                    <div class="card-name">LED Scrolling Display</div>
+                    <div class="card-badges"><span class="badge badge--no-apex">CLIENT-SIDE</span></div>
+                </div>
+                <div class="card-desc">Casino-style LED ticker with CSS animation. Fully configurable text, colors, speed, font size, and display height via design attributes.</div>
+                <div class="card-meta">
+                    <span class="card-tag">CSS Animation</span>
+                    <span class="card-tag">Configurable</span>
+                    <span class="card-tag">No Apex</span>
+                </div>
+            </div>
+
+            <div class="card card--general">
+                <div class="card-top">
+                    <div class="card-name">Contact Info Panel</div>
+                    <div class="card-badges"><span class="badge badge--flow">FLOW</span></div>
+                </div>
+                <div class="card-desc">Contact details display designed for Salesforce Flows. Accepts fields as input parameters, renders only populated fields.</div>
+                <div class="card-meta">
+                    <span class="card-tag">Screen Flow</span>
+                    <span class="card-tag">Dynamic Fields</span>
+                </div>
+            </div>
+
+            <div class="card card--general">
+                <div class="card-top">
+                    <div class="card-name">Weather Forecast</div>
+                    <div class="card-badges"><span class="badge badge--apex">APEX</span><span class="badge badge--flow">FLOW</span></div>
+                </div>
+                <div class="card-desc">OpenWeather API integration via Salesforce Flow. Accepts zip code and API key as parameters, displays today's forecast with conditions.</div>
+                <div class="card-meta">
+                    <span class="card-tag">HTTP Callout</span>
+                    <span class="card-tag">OpenWeather API</span>
+                    <span class="card-tag">Flow Input</span>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ═══════ APEX UTILITIES ═══════ -->
+    <section class="section" data-category="apex">
+        <div class="section-header">
+            <div class="section-icon section-icon--apex">🔩</div>
+            <h2 class="section-title">Apex Utilities</h2>
+            <span class="section-count">1</span>
+        </div>
+        <div class="card-grid">
+
+            <div class="card card--apex">
+                <div class="card-top">
+                    <div class="card-name">W-9 Document Pipeline</div>
+                    <div class="card-badges"><span class="badge badge--apex">APEX</span><span class="badge badge--flow">FLOW</span></div>
+                </div>
+                <div class="card-desc">Two-class pipeline: W9DocumentRetriever locates W-9 files on Contacts, W9ContentExtractor pulls text for Agentforce AI analysis. Supports PDF, TXT, CSV with OCR flagging.</div>
+                <div class="card-meta">
+                    <span class="card-tag">ContentVersion</span>
+                    <span class="card-tag">Agentforce</span>
+                    <span class="card-tag">Invocable</span>
+                    <span class="card-tag">100% Coverage</span>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ═══════ COMFYUI WORKFLOWS ═══════ -->
+    <section class="section" data-category="comfyui">
+        <div class="section-header">
+            <div class="section-icon section-icon--comfyui">🎨</div>
+            <h2 class="section-title">ComfyUI Workflows</h2>
+            <span class="section-count">4</span>
+        </div>
+        <div class="card-grid">
+
+            <div class="card card--comfyui">
+                <div class="card-top">
+                    <div class="card-name">SVD Image to Video</div>
+                    <div class="card-badges"><span class="badge badge--obj">SVD XT 1.1</span></div>
+                </div>
+                <div class="card-desc">Animate still images using Stable Video Diffusion. Image-based conditioning (no text prompts). Controls for motion amount, augmentation, and frame count.</div>
+                <div class="card-meta">
+                    <span class="card-tag">img2vid</span>
+                    <span class="card-tag">25 Frames</span>
+                    <span class="card-tag">8GB VRAM</span>
+                </div>
+            </div>
+
+            <div class="card card--comfyui">
+                <div class="card-top">
+                    <div class="card-name">Wan 2.1 Image to Video</div>
+                    <div class="card-badges"><span class="badge badge--obj">14B MODEL</span></div>
+                </div>
+                <div class="card-desc">Text-guided video generation from images using Wan 2.1 (14B high version). Full positive/negative prompt support with CLIP-L + T5XXL encoders.</div>
+                <div class="card-meta">
+                    <span class="card-tag">img2vid</span>
+                    <span class="card-tag">Text Guided</span>
+                    <span class="card-tag">81 Frames</span>
+                    <span class="card-tag">24GB VRAM</span>
+                </div>
+            </div>
+
+            <div class="card card--comfyui">
+                <div class="card-top">
+                    <div class="card-name">SDXL Text to Image</div>
+                    <div class="card-badges"><span class="badge badge--obj">SDXL 1.0</span></div>
+                </div>
+                <div class="card-desc">Generate images from text prompts using Stable Diffusion XL. Positive/negative prompts, configurable resolution, sampler, and CFG scale.</div>
+                <div class="card-meta">
+                    <span class="card-tag">txt2img</span>
+                    <span class="card-tag">1024×1024</span>
+                    <span class="card-tag">8GB VRAM</span>
+                </div>
+            </div>
+
+            <div class="card card--comfyui">
+                <div class="card-top">
+                    <div class="card-name">SDXL Image to Image</div>
+                    <div class="card-badges"><span class="badge badge--obj">SDXL 1.0</span></div>
+                </div>
+                <div class="card-desc">Transform images with text-guided style transfer. Denoise strength controls how much the output deviates from the source. Includes optional before/after comparison.</div>
+                <div class="card-meta">
+                    <span class="card-tag">img2img</span>
+                    <span class="card-tag">Style Transfer</span>
+                    <span class="card-tag">8GB VRAM</span>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ═══════ FOOTER ═══════ -->
+    <footer class="footer">
+        <div class="divider" style="margin-bottom: 2rem;"></div>
+        <p>Built with Salesforce Aura &amp; ComfyUI &middot; <a href="https://github.com/YOUR_USERNAME" target="_blank">GitHub Profile</a></p>
+        <p style="margin-top: 0.5rem; color: var(--text-muted);">MIT License &middot; 2026</p>
+    </footer>
+
+    <!-- ═══════ FILTER LOGIC ═══════ -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const buttons = document.querySelectorAll('.filter-btn');
+            const sections = document.querySelectorAll('.section[data-category]');
+
+            buttons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    buttons.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+
+                    const filter = btn.dataset.filter;
+
+                    sections.forEach(section => {
+                        if (filter === 'all' || section.dataset.category === filter) {
+                            section.classList.remove('hidden');
+                            // Re-trigger card animations
+                            section.querySelectorAll('.card').forEach((card, i) => {
+                                card.style.animation = 'none';
+                                card.offsetHeight; // force reflow
+                                card.style.animation = `fadeUp 0.5s ease-out ${i * 0.05}s both`;
+                            });
+                        } else {
+                            section.classList.add('hidden');
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>
